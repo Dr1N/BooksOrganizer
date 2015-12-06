@@ -1,4 +1,5 @@
 # BooksOrganizer
-PHP Yii2, Ajax
+Techologies: PHP Yii2, Ajax
 
-Simple manage books projects.
+[app] - Application
+[db] - Database script
