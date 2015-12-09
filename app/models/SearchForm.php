@@ -12,8 +12,8 @@ class SearchForm extends Model
     public $firstPublicationDate;
     public $secondPublicationDate;
     
-    private $fitstTimestamp = 0;
-    private $secondTimestamp = 0;
+    public $fitstTimestamp = 0;
+    public $secondTimestamp = 0;
 
     /**
      * @return array the validation rules.
