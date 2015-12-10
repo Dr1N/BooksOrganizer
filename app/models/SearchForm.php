@@ -12,7 +12,7 @@ class SearchForm extends Model
     public $firstPublicationDate;
     public $secondPublicationDate;
     
-    public $fitstTimestamp = 0;
+    public $firstTimestamp = 0;
     public $secondTimestamp = 0;
 
     /**
@@ -23,7 +23,7 @@ class SearchForm extends Model
         return [
             [['author_id'], 'integer'],
             [['name'], 'string', 'max' => 128],
-            [['firstPublicationDate'], 'date', 'format' => 'd.m.Y', 'timestampAttribute' => 'fitstTimestamp'],
+            [['firstPublicationDate'], 'date', 'format' => 'd.m.Y', 'timestampAttribute' => 'firstTimestamp'],
             [['secondPublicationDate'], 'date', 'format' => 'd.m.Y', 'timestampAttribute' => 'secondTimestamp'],
         ];
     }
@@ -48,10 +48,10 @@ class SearchForm extends Model
     {
         if(!empty($firstPublicationDate) && !empty($secondPublicationDate))
         {
-            if ($this->fitstTimestamp > $this->secondTimestamp)
+            if ($this->firstTimestamp > $this->secondTimestamp)
             {
-                $tmp = $this->fitstTimestamp;
-                $this->fitstTimestamp = $this->secondTimestamp;
+                $tmp = $this->firstTimestamp;
+                $this->firstTimestamp = $this->secondTimestamp;
                 $this->secondTimestamp = $tmp;
             }
         }
@@ -78,20 +78,20 @@ class SearchForm extends Model
         
         //Date
 
-        if($this->fitstTimestamp != 0 && $this->secondTimestamp != 0)
+        if($this->firstTimestamp != 0 && $this->secondTimestamp != 0)
         {
-            if($this->fitstTimestamp == $this->secondTimestamp)
+            if($this->firstTimestamp == $this->secondTimestamp)
             {
-                $query = $query->andWhere(['=', 'date', $this->fitstTimestamp]);
+                $query = $query->andWhere(['=', 'date', $this->firstTimestamp]);
             }
             else
             {
-                $query = $query->andWhere(['between', 'date', $this->fitstTimestamp, $this->secondTimestamp]);
+                $query = $query->andWhere(['between', 'date', $this->firstTimestamp, $this->secondTimestamp]);
             }
         }
-        else if($this->fitstTimestamp != 0)
+        else if($this->firstTimestamp != 0)
         {
-            $query = $query->andWhere(['>=', 'date', $this->fitstTimestamp]);
+            $query = $query->andWhere(['>=', 'date', $this->firstTimestamp]);
         }
         else if($this->secondTimestamp != 0)
         {

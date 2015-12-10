@@ -9,6 +9,8 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 
+use app\components\SessionAction;
+
 class SiteController extends Controller
 {
     public function behaviors()
@@ -30,6 +32,9 @@ class SiteController extends Controller
                 'actions' => [
                     'logout' => ['post'],
                 ],
+            ],
+            'mysess' => [
+                'class' => SessionAction::className(),
             ],
         ];
     }
@@ -67,6 +72,11 @@ class SiteController extends Controller
             Yii::$app->session->remove('searchForm');
         }
 
+        if (Yii::$app->session->has('absoluteUrl')) 
+        {
+            Yii::$app->session->remove('absoluteUrl');
+        }
+
         return $this->goHome();
     }
 
@@ -82,5 +92,11 @@ class SiteController extends Controller
         {
             return $this->render('error', ['exception' => $exception]);
         }
+    }
+
+    public function actionTest()
+    {
+        $tmp = new SessionAction(['except' => ['index', 'update']]);
+        var_dump($tmp);
     }
 }

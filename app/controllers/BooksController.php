@@ -14,6 +14,8 @@ use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 
+use app\components\SessionAction;
+
 /**
  * BooksController implements the CRUD actions for Books model.
  */
@@ -49,26 +51,19 @@ class BooksController extends Controller
     {
         $searchForm = new SearchForm();
         $authors = Authors::getAuthorsForDropDownList();
-        $searchForm->load(Yii::$app->request->post());
-
-        //User search request
-
+        
+        Yii::$app->session->set('absoluteUrl', Yii::$app->request->absoluteUrl);
         if(Yii::$app->request->isPost && $searchForm->validate())
         {
-            $query = $searchForm->getSearchQuery();
+            $searchForm->load(Yii::$app->request->post());
             Yii::$app->session->set('searchForm', $searchForm);
         }
-        else if(Yii::$app->session->has('searchForm'))	//Return to booklist from other page
+        else if(Yii::$app->session->has('searchForm'))
         {
         	$searchForm = Yii::$app->session->get('searchForm');
-        	$query = $searchForm->getSearchQuery();
-        	Yii::$app->session->remove('searchForm');
-        }
-        else 											//First request booklist
-        {
-    	 	$query = Books::find();
         }
 
+        $query = $searchForm->getSearchQuery();
         $dataProvider = new ActiveDataProvider([
             'query' => $query->with('author'),
             'pagination' => 
@@ -115,7 +110,11 @@ class BooksController extends Controller
             $model->cover = UploadedFile::getInstance($model, 'cover');
             if($model->save())
             {
-                return $this->redirect(\Yii::$app->urlManager->createUrl("books"));
+                $absoluteUrl = (Yii::$app->session->has('absoluteUrl')) ? 
+                    Yii::$app->session->get('absoluteUrl') : 
+                    Yii::$app->urlManager->createUrl("books");
+
+                return $this->redirect($absoluteUrl);
             }
         }
         
@@ -136,7 +135,6 @@ class BooksController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 
@@ -152,7 +150,7 @@ class BooksController extends Controller
         if (($model = Books::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException('Запрашиваемая странца не существует.');
         }
     }
 }

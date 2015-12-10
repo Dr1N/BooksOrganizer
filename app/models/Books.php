@@ -4,6 +4,8 @@ namespace app\models;
 use yii\web\UploadedFile;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 use Yii;
 
@@ -106,6 +108,12 @@ class Books extends \yii\db\ActiveRecord
         return false;
     }
 
+    public function afterDelete() 
+    {
+        //to-do
+        //delete cover file
+    }
+
     /**
      * Save file with new name
     */
@@ -117,5 +125,11 @@ class Books extends \yii\db\ActiveRecord
             return $this->cover->saveAs('images/' . $this->preview);
         }
         return true;
+    }
+
+    public function getBookCoverImageTag()
+    {
+        $imagePath = ($this->preview == null) ? '/images/nocover.gif' : '/images/' . $this->preview;
+        return Html::img(Url::base() . $imagePath,[ 'alt' => 'Обложка', 'style' => 'width:50px;']);
     }
 }

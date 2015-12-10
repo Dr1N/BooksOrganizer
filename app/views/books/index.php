@@ -5,10 +5,13 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\bootstrap\Modal;
 use yii\widgets\Pjax;
+use app\assets\BooksAsset;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $searchForm yii\data\SearchForm */
+
+BooksAsset::register($this);    //Ajax and modal window initialize
 ?>
 
 <div class="books-index">
@@ -24,9 +27,7 @@ use yii\widgets\Pjax;
                 'contentOptions' => ['style' => 'text-align: center;'],
                 'enableSorting' => false,
                 'value' => function($model){
-                    $imagePath = ($model->preview == null) ? '/images/nocover.gif' : '/images/' . $model->preview;
-                    $imageTag = Html::img(Url::base() . $imagePath,[ 'alt' => 'Обложка', 'style' => 'width:50px;']);
-                    return Html::a($imageTag, '#', [
+                    return Html::a($model->getBookCoverImageTag(), '#', [
                         'class' => 'activity-image-link',
                         'title' => 'Увеличить',
                         'data-toggle' => 'modal',
@@ -75,7 +76,14 @@ use yii\widgets\Pjax;
                     },
                     'delete' => function($url, $model)
                     {
-                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, ['title' => 'Удалить']);
+                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, 
+                        [
+                            'title' => 'Удалить',
+                            'data' => [
+                                'confirm' => "Вы дейсвительно хотите удалить книгу?",
+                                'method' => 'post',
+                            ]
+                        ]);
                     },        
                 ],
             ],
@@ -91,38 +99,7 @@ use yii\widgets\Pjax;
             'columns'=>$gridColumns,
         ]);
     ?>
-    
-    <?php
 
-        //View Books details in modal window (AJAX)
-
-        $viewRoute = Url::toRoute(['books/view']);
-        $this->registerJs(
-            "$('.activity-view-link').click(function() {
-                var postUrl = \"$viewRoute&id=\" + $(this).data('id');
-                $.post(
-                    postUrl,
-                    function (data) {
-                        $('.modal-body').html(data);
-                        $('.modal-title').html('Просмотр книги');
-                        $('#activity-modal').modal();
-                    }  
-                );
-            });"
-        );
-
-        //View Cover in modal window
-
-        $this->registerJs(
-            "$('.activity-image-link').click(function() {
-                var src = $(this).children(\"img\").attr(\"src\");
-                var cover = $('<img />', {src: src, class: 'center-block', style: 'max-width:500px'});
-                $('.modal-title').html('Обложка книги');
-                $('.modal-body').html(cover);
-            });"
-        );
-    ?>
-    
     <?php 
 
         //Modal window for Book and Image 
@@ -135,5 +112,4 @@ use yii\widgets\Pjax;
         ]);
     ?>
     <?php Modal::end(); ?>
- 
 </div>

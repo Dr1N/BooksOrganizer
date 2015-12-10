@@ -21,7 +21,7 @@ use yii\jui\DatePicker;
         ],
     ]); ?>
 
-     <?= $form->errorSummary($searchForm); ?>
+    <?= $form->errorSummary($searchForm); ?>
 
     <?= $form->field($searchForm, 'author_id', ['enableError' => false])
                 ->dropdownList($authors, ['prompt' => 'Все авторы']) ?>

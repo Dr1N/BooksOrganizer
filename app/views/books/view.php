@@ -26,7 +26,7 @@ $this->title = $model->name;
                 ],
                 [
                     'attribute' => 'date',
-                    'format' => ['date', 'php:d F Y H:i:s'],
+                    'format' => ['date', 'php:d F Y'],
                 ],  
                 [
                     'attribute' => 'date_create',

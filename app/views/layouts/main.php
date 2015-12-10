@@ -14,7 +14,7 @@ AppAsset::register($this);
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
-<head>
+<head>А
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
@@ -33,21 +33,25 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+
     $items = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        Yii::$app->user->isGuest ?
-            ['label' => 'Login', 'url' => ['/site/login']] :
-            [
-                'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
-                'url' => ['/site/logout'],
-                'linkOptions' => ['data-method' => 'post']
-            ],
-        ['label' => 'About', 'url' => ['/site/about']],
+        ['label' => 'Home', 'url' => ['/site/index']]
     ];
     if(!Yii::$app->user->isGuest)
     {
-        array_splice($items, 1, 0, [['label' => 'Books', 'url' => ['/books/']]]);
+        $items[] = ['label' => 'Books', 'url' => ['/books/']];
+        $items[] = [
+            'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+            'url' => ['/site/logout'],
+            'linkOptions' => ['data-method' => 'post']
+        ];       
     }
+    else
+    {
+        $items[] = ['label' => 'Login', 'url' => ['/site/login']];
+    }
+    $items[] = ['label' => 'About', 'url' => ['/site/about']];
+   
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => $items,
